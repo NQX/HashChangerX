@@ -51,7 +51,7 @@ def changeHash(path):
 		data = file.read()
 		file.close()
 
-		data += " extends"
+		data += '\0'
 
 		output = open(path, "wb")
 		output.write(data)
