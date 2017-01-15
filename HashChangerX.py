@@ -2,6 +2,7 @@ from Tkinter import *
 import tkFileDialog
 import os
 import hashlib
+from PIL import Image
 
 
 
@@ -34,6 +35,7 @@ def changeName(path):
 
 					#chane hash
 					changeHash(fullpath)
+					convertPngToJpg(fullpath)
 
 					extension = filename.split(".")[-1]		
 					newName = hashlib.md5(filename.encode()).hexdigest()
@@ -58,6 +60,15 @@ def changeHash(path):
 		output.close()
 
 
+def convertPngToJpg(path):
+	if var3.get():
+		im = Image.open(path)
+		pathWithoutExtension = path.split(".")[0]
+		#print(extension)
+		#im.save("file.jpg", "JPEG")
+		im.save(pathWithoutExtension + ".jpg", "JPEG")
+
+
 
 
 
@@ -69,6 +80,8 @@ var1 = IntVar()
 Checkbutton(master, text="rename", variable=var1).grid(row=1, sticky=W)
 var2 = IntVar()
 Checkbutton(master, text="rehash", variable=var2).grid(row=2, sticky=W)
+var3 = IntVar()
+Checkbutton(master, text="Png to Jpg", variable=var3).grid(row=3, sticky=W)
 
 Button(master, text='Open Folder', command=myFunc).grid(row=4, sticky=W, pady=4)
 mainloop()
