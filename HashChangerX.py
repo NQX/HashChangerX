@@ -2,6 +2,8 @@ from Tkinter import *
 import tkFileDialog
 import os
 import hashlib
+import shutil
+
 from PIL import Image
 
 
@@ -30,8 +32,8 @@ def selectFolder():
 def changeName(path, filename):
 	statusText.set("Done")
 
-	print("path " + path)
-	print("filename " + filename)
+	#print("path " + slider.get())
+	
 							
 
 	fileNameWithoutExtension = filename.split(".")[0]
@@ -76,10 +78,48 @@ def convertPngToJpg(path, filename):
 
 
 
+def deleteDuplicates():
+	global path
+
+	filesDict = {}
+	doublesList = []
+	
+	for filename in os.listdir(path):
+		if checkIfValid(filename):
+			print("filename is " + filename)
+			fullpath = path + "/" + filename
+			hashValue = hashlib.md5(open(fullpath, 'rb').read()).hexdigest()
+
+			if hashValue in filesDict:
+				doublesList.append(filename)
+			else:
+				filesDict[hashValue] = filename
+
+	handleDuplicates(doublesList)
+
+
+
+def handleDuplicates(doublesList):
+	global path
+
+	folderPath = path + "/" + "_duplicates"
+	
+	if not os.path.exists(folderPath):
+		os.makedirs(folderPath)
+
+	for file in doublesList:
+		shutil.move(path + "/" + file, folderPath + "/" + file)
+
+
+
+
+
+
 
 
 def checkIfValid(file):
 	global path
+
 	
 	if os.path.isfile(path + "/" + file) and file[0] != "." and file != __file__ : 
 		#no hidden files like .DS_Store
@@ -153,4 +193,12 @@ statusText.set("Ready")
 
 Button(master, text='Open Folder', command=selectFolder).grid(row=5, sticky=W, pady=4)
 Button(master, text='Start', command=start).grid(row=6, sticky=W)
+
+#Label(master, text="New Name length:").grid(row=7, sticky=W)
+#slider = Scale(master, from_=1, to=32, orient=HORIZONTAL).grid(row=8, sticky=W)
+
+Button(master, text="Delete Duplicate", command=deleteDuplicates).grid(row=9, sticky=W)
+
+#slider.set(64)
+
 mainloop()
