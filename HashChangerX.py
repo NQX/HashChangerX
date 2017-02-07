@@ -66,7 +66,7 @@ def changeHash(path):
 def convertPngToJpg(path, filename):
 	#print("Old type " + path)
 	fullpath = path + "/" + filename
-	im = Image.open(fullpath)
+	im = Image.open(fullpath).convert('RGB')
 	pathWithoutExtension = fullpath.split(".")[0]
 
 	im.save(pathWithoutExtension + ".jpg", "JPEG")
